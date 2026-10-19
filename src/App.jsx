@@ -1,59 +1,46 @@
 import React, { useState } from 'react';
 import { InventoryProvider, useInventory } from './context/InventoryContext';
-import { Header } from './components/layout/Header';
-import { Navigation } from './components/layout/Sidebar';
-import { InventoryModule } from './components/inventory/InventoryModule';
-import { OrderFulfillmentModule } from './components/orders/OrderFulfillmentModule';
-import { ProcurementModule } from './components/procurement/ProcurementModule';
-import { AnalyticsModule } from './components/analytics/AnalyticsModule';
-import { SpmInfoModal } from './components/common/SpmInfoModal';
-import { Toast } from './components/common/Toast';
+import { Header } from './components/Header';
+import { Tabs } from './components/Tabs';
+import { ProductsTab } from './components/ProductsTab';
+import { OrdersTab } from './components/OrdersTab';
+import { RestockTab } from './components/RestockTab';
+import { SummaryTab } from './components/SummaryTab';
 
-const MainLayout = () => {
-  const [activeTab, setActiveTab] = useState('inventory');
-  const [isSpmModalOpen, setIsSpmModalOpen] = useState(false);
+const SimpleDashboard = () => {
+  const [activeTab, setActiveTab] = useState('products');
   const { toast } = useInventory();
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col font-sans">
-      {/* Top Application Header */}
-      <Header onOpenSpmModal={() => setIsSpmModalOpen(true)} />
+    <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
+      {/* Clean Navbar */}
+      <Header />
 
-      {/* Module Navigation Tabs */}
-      <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+      {/* 4 Clean Tabs */}
+      <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Main Workspace Body */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {activeTab === 'inventory' && <InventoryModule />}
-        {activeTab === 'fulfillment' && <OrderFulfillmentModule />}
-        {activeTab === 'procurement' && <ProcurementModule />}
-        {activeTab === 'analytics' && <AnalyticsModule />}
+      {/* Main Content Area */}
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-6">
+        {activeTab === 'products' && <ProductsTab />}
+        {activeTab === 'orders' && <OrdersTab />}
+        {activeTab === 'restock' && <RestockTab />}
+        {activeTab === 'summary' && <SummaryTab />}
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="font-extrabold text-slate-800">FlashStock IMS</span>
-            <span>•</span>
-            <span>Quick Commerce Micro-Fulfillment & Inventory Management</span>
-          </div>
-          <div className="flex items-center gap-3 text-slate-400">
-            <span>React 19 + LocalStorage</span>
-            <span>•</span>
-            <button
-              onClick={() => setIsSpmModalOpen(true)}
-              className="text-amber-600 hover:text-amber-700 font-semibold cursor-pointer underline"
-            >
-              SPM Project Documentation & Agile Sprints
-            </button>
-          </div>
+      <footer className="bg-white border-t border-gray-200 py-3 text-center text-xs text-gray-500">
+        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between">
+          <span>Quick Commerce Inventory Management System (SPM Project)</span>
+          <span>React.js + LocalStorage</span>
         </div>
       </footer>
 
-      {/* Floating Alerts & Modals */}
-      <Toast toast={toast} />
-      <SpmInfoModal isOpen={isSpmModalOpen} onClose={() => setIsSpmModalOpen(false)} />
+      {/* Toast Notification */}
+      {toast && (
+        <div className="fixed bottom-5 right-5 z-50 bg-gray-900 text-white px-4 py-2.5 rounded-lg shadow-lg text-xs font-semibold animate-fade-in flex items-center gap-2">
+          <span>{toast}</span>
+        </div>
+      )}
     </div>
   );
 };
@@ -61,7 +48,7 @@ const MainLayout = () => {
 export function App() {
   return (
     <InventoryProvider>
-      <MainLayout />
+      <SimpleDashboard />
     </InventoryProvider>
   );
 }
